@@ -50,7 +50,7 @@
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.10.3"
   },
-  "dependencies": {
+  "peerDependencies": {
     "lodash.clonedeep": "^4.2.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
