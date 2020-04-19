@@ -1,0 +1,46 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+h4 {
+  max-width: 200px;
+  margin: 75px auto 10px;
+  font-weight: 100;
+}
+form {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+input,
+select,
+textarea,
+custom-input {
+  display: block;
+  margin: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type='radio'] {
+  display: inline;
+  width: auto;
+}
+
+label {
+  margin-right: 25px;
+}
+
+button {
+  display: block;
+  background: none;
+  outline: none;
+  width: 100%;
+}
+
+.error-message {
+  display: block;
+  color: red;
+  font-size: 12px;
+  margin-top: -8px;
+}

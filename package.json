@@ -1,0 +1,48 @@
+{
+  "name": "lite-form",
+  "description": "Form HOC for Web Components. It's also works for LitElement.",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "webpack-dev-server --config examples/webpack.development.js ",
+    "build": "rollup -c -o dist/index.js"
+  },
+  "main": "dist/index.js",
+  "keywords": [
+    "form",
+    "web components",
+    "custom element",
+    "lit-element",
+    "hoc",
+    "higher order component",
+    "webcomponents",
+    "lit",
+    "base class",
+    "builtin element",
+    "forms",
+    "validation",
+    "submit"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/preset-env": "^7.6.3",
+    "@yelo/rollup-node-external": "^1.0.1",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.5.2",
+    "lit-element": "^2.3.1",
+    "rollup": "^1.20.2",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-terser": "^5.1.1",
+    "style-loader": "^1.1.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "lodash.clonedeep": "^4.2.0",
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2"
+  }
+}
