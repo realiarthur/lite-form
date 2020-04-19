@@ -1,12 +1,22 @@
 {
   "name": "lite-form",
   "description": "Form HOC for Web Components. It's also works for LitElement.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "start": "webpack-dev-server --config examples/webpack.development.js ",
     "build": "rollup -c -o dist/index.js"
   },
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/realiarthur/lite-form.git"
+  },
+  "author": "Arthur Islamov (https://github.com/realiarthur)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/realiarthur/lite-form/issues"
+  },
+  "homepage": "https://github.com/realiarthur/lite-form#readme",
   "keywords": [
     "form",
     "web components",

@@ -1,4 +1,5 @@
-# Lite Form
+# Lite Form [![](https://img.shields.io/npm/v/lite-form.svg?style=flat)](https://www.npmjs.com/package/lite-form) ![](https://img.shields.io/bundlephobia/minzip/lite-form.svg?style=flat)
+
 Form HOC for Web Components. It's also works for LitElement.
 
 - [Examples](#examples)
