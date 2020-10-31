@@ -318,7 +318,7 @@ Instead of using config in the HOC, you can put it in the Component class. This 
 - initialValues: `{ propName: value }`
 - validationSchema: `{ propName: (value, props) => 'error'||{} }`
 - validateOnBlur: `boolean`. Default: `true`
-- validateOnChang: `boolean`. Default: `true`
+- validateOnChange: `boolean`. Default: `true`
 
 ##### Props
 - values: `object`
@@ -364,7 +364,7 @@ Component must have `name` (means path) or `id` attribute.
 ##### Usage
 `withError(Component)`
 
-Component must have `name` (means path) or `id` attribute.
+Component must have `name`.
 
 ##### Props
 - error: `object`

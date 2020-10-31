@@ -1,48 +1,62 @@
-import set from 'lodash.set'
-import get from 'lodash.get'
-import cloneDeep from 'lodash.clonedeep'
+import {Constructor, ErrorMap, FormElementProps, InputValue, TouchedMap, ValidatorMap, ValueMap} from './types';
+import {cloneDeep, get, set} from 'lodash-es'
 import {
   getEventTarget,
   getValueFromEventTarget,
-  setBooleanValue
 } from './utils'
 
+import { ConnectableElement } from './types';
+
 export const IS_LITE_FORM = 'data-isliteform'
+
 export const EVENTS = {
   valuesChange: 'values_change',
   errorsChange: 'errors_touched_change'
 }
 
-export const withForm = configOrComponent => {
-  if (typeof configOrComponent==='object') {
+export interface FormConfig {
+  onSubmit?: (values: ValueMap, props: FormElementProps) => void;
+  initialValues?: ValueMap;
+  validationSchema?: ValidatorMap;
+  validateOnBlur?: boolean;
+  validateOnChange?: boolean;
+}
+
+export function withForm(config: FormConfig): ReturnType<typeof withFormExtended>;
+export function withForm(element: Constructor<ConnectableElement>): ReturnType<ReturnType<typeof withFormExtended>>;
+export function withForm(configOrComponent: FormConfig | Constructor<ConnectableElement>): ReturnType<typeof withFormExtended> | ReturnType<ReturnType<typeof withFormExtended>> {
+  if (typeof configOrComponent === 'object') {
     return withFormExtended(configOrComponent)
   }
   return withFormExtended()(configOrComponent)
 }
 
-const withFormExtended = ({
-  onSubmit,
-  initialValues,
-  validationSchema,
-  validateOnBlur,
-  validateOnChange
-} = {}) => Component =>
+const withFormExtended = <T extends Constructor<ConnectableElement & FormConfig>>(config?:FormConfig) => (Component: T) =>
   class LiteForm extends Component {
+    values: ValueMap;
+    errors: ErrorMap;
+    touched: TouchedMap;
+    isValid: boolean; 
+
+    _onSubmit: (values: ValueMap, props: FormElementProps) => void;
+    _initialValues: ValueMap;
+    _validationSchema: ValidatorMap;
+    _validateOnBlur: boolean;
+    _validateOnChange: boolean;
+
     connectedCallback() {
+      const {onSubmit, initialValues, validationSchema, validateOnChange} = config ?? {};
       // take params from HOC argument, or from class (if you build base class, like <lite-form>) or default
       this._onSubmit = (onSubmit || this.onSubmit || function () {}).bind(this)
       this._initialValues = initialValues || this.initialValues || {}
       this._validationSchema = validationSchema || this.validationSchema || {}
-      this._validateOnBlur = setBooleanValue(
-        validateOnBlur,
-        this.validateOnBlur,
+      this._validateOnBlur = 
+        config.validateOnBlur ??
+        this.validateOnBlur ??
         true
-      )
-      this._validateOnChange = setBooleanValue(
-        validateOnChange,
-        this.validateOnChange,
+      this._validateOnChange = validateOnChange ??
+        this.validateOnChange ??
         true
-      )
 
       // isLiteForm atribute for HOCs can find their form element
       this.setAttribute(IS_LITE_FORM, 'true')
@@ -92,7 +106,7 @@ const withFormExtended = ({
       )
     }
 
-    handleReset = e => {
+    handleReset = (e?:Event) => {
       e && e.preventDefault()
       this._values = cloneDeep(this._initialValues)
       this._touched = {}
@@ -100,7 +114,7 @@ const withFormExtended = ({
       this.isValid = undefined
     }
 
-    handleSubmit = e => {
+    handleSubmit = (e?:Event) => {
       e && e.preventDefault()
 
       this.handleValidate()
@@ -110,7 +124,7 @@ const withFormExtended = ({
       } else {
         // Touch all fields to show validation errors
         this._touched = Object.keys(this._validationSchema).reduce(
-          (obj, fieldName) => {
+          (obj: { [propName: string]: boolean; }, fieldName: string) => {
             set(obj, fieldName, true)
             return obj
           },
@@ -119,32 +133,36 @@ const withFormExtended = ({
       }
     }
 
-    handleBlur = nameOrEvent => {
-      // if nameOrEvent is name - set touched for name and handleValidate if needed
-      if (typeof nameOrEvent === 'string') {
-        this._touched = set(this._touched, nameOrEvent, true)
-        if (this._validateOnBlur) {
-          this.handleValidate()
+    // TODO: Check remove recursion. I think === 'string' was missing a return.
+    // Set touched for name and handleValidate if needed
+    handleBlur = (nameOrEvent: string | Event): void => {
+      let name: string;
+
+      // Extracts the name from the event.
+      if (typeof nameOrEvent !== 'string') {        
+        const eventTarget = getEventTarget(nameOrEvent)
+        if (eventTarget) {
+          name = eventTarget.name || eventTarget.id;
         }
+      } else {
+        name = nameOrEvent;
       }
 
-      // if nameOrEvent is event - get name and execute this.handleBlur with it
-      const eventTarget = getEventTarget(nameOrEvent)
-      if (eventTarget) {
-        const { name, id } = eventTarget
-
-        this.handleBlur(name || id)
+      this._touched = set(this._touched, name, true)
+      if (this._validateOnBlur) {
+        this.handleValidate()
       }
     }
 
-    setValue = (name, value) => {
+    setValue = (name: string, value:InputValue): void => {
       this._values = set(cloneDeep(this.values), name, value)
     }
 
-    handleChange = nameOrEvent => {
+
+    handleChange = (nameOrEvent: string | Event)  => {
       // if nameOrEvent is name - return function that will change value for this name
       if (typeof nameOrEvent === 'string') {
-        return value => {
+        return (value: InputValue) => {
           this.setValue(nameOrEvent, value)
           if (this._validateOnChange) {
             this.handleValidate()
@@ -161,7 +179,7 @@ const withFormExtended = ({
       }
     }
 
-    handleValidate = () => {
+    handleValidate = (): void => {
       let isValid = true
 
       const errors = Object.keys(this._validationSchema).reduce((obj, key) => {

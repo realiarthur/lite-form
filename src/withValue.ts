@@ -1,17 +1,20 @@
-import { withFormClass } from './withFormClass'
+import { Constructor, CustomElement, InputValue } from './types'
+
 import { EVENTS } from './withForm'
-import get from 'lodash.get'
+import { get } from 'lodash-es'
+import { withFormClass } from './withFormClass'
 
 // Super need to have "name" or "id" attribute
 // HoC which returns "value" from form by "name" or "id"
-export const withValue = Сomponent => {
-  return withFormClass(
-    class extends Сomponent {
-      _onFormValuesChange(e) {
+export const withValue = <T extends Constructor<CustomElement<{name?: string, id?: string}>>>(Component: T) => {
+  return class extends withFormClass(Component) {
+      value: InputValue;
+
+      _onFormValuesChange(e: CustomEvent): void {
         this.value = get(e.detail.values, this.name || this.id)
       }
 
-      connectedCallback() {
+      connectedCallback(): void {
         super.connectedCallback && super.connectedCallback()
 
         this.value = get(this._formClass.values, this.name || this.id)
@@ -22,8 +25,8 @@ export const withValue = Сomponent => {
         )
       }
 
-      disconectedCallback() {
-        super.disconectedCallback && super.disconectedCallback()
+      disconnectedCallback(): void {
+        super.disconnectedCallback && super.disconnectedCallback()
 
         this._formClass.removeEventListener(
           EVENTS.valuesChange,
@@ -31,5 +34,4 @@ export const withValue = Сomponent => {
         )
       }
     }
-  )
 }

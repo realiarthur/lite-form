@@ -3,10 +3,21 @@
   "description": "Form HOC for Web Components. It's also works for LitElement.",
   "version": "1.0.2",
   "scripts": {
-    "start": "webpack-dev-server --config examples/webpack.development.js ",
-    "build": "rollup -c -o dist/index.js"
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
   },
   "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/realiarthur/lite-form.git"
@@ -32,27 +43,37 @@
     "validation",
     "submit"
   ],
+  "husky-ENABLE_AFTER_FORMATING_COMMIT": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "size-limit": [
+    {
+      "path": "dist/lite-form.cjs.production.min.js",
+      "limit": "7 KB"
+    },
+    {
+      "path": "dist/lite-form.esm.js",
+      "limit": "7 KB"
+    }
+  ],
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-class-properties": "^7.2.3",
-    "@babel/preset-env": "^7.6.3",
-    "@yelo/rollup-node-external": "^1.0.1",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.5.2",
-    "lit-element": "^2.3.1",
-    "rollup": "^1.20.2",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-terser": "^5.1.1",
-    "style-loader": "^1.1.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.10.3"
+    "@size-limit/preset-small-lib": "^4.7.0",
+    "@types/lodash-es": "^4.17.3",
+    "husky": "^4.3.0",
+    "size-limit": "^4.7.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.0.3",
+    "typescript": "^4.0.5"
   },
   "dependencies": {
-    "lodash.clonedeep": "^4.2.0",
-    "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2"
+    "lodash-es": "^4.17.15"
   }
 }
