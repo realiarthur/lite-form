@@ -37,25 +37,12 @@ export function withField(configOrComponent: FieldConfig | Constructor<Connectab
 
 const withFieldExtended = (config?: FieldConfig) => <T extends Constructor<CustomElement<{name?: string, id?:string}>>>(Component: T) =>
     class LiteField extends withValue(Component) {
-      handleChange = (eventOrValue: Event | CustomEvent | {name?:string; id?:string}): void => {
-        const changeExecutor: (value: InputValue) => void = this._formClass.handleChange(
-          this.name || this.id
-        )
-
-        // if event
-        const eventTarget = getEventTarget(eventOrValue)
-        if (eventTarget) {
-          const value = getValueFromEventTarget(eventTarget)
-          changeExecutor(value)
-          return
-        }
-
-        // if value
-        changeExecutor(eventOrValue as InputValue)
+      handleChange = (event: Event | CustomEvent): void => {
+        this._formClass.handleChange(event, this.name || this.id);
       }
 
-      handleBlur = (): void => {
-        this._formClass.handleBlur(this.name || this.id)
+      handleBlur = (event: Event | CustomEvent): void => {
+        this._formClass.handleBlur(event, this.name || this.id)
       }
 
       connectedCallback(): void {

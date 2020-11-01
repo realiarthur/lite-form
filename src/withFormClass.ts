@@ -6,7 +6,7 @@ import { ConnectableElement, Constructor, FormElement } from './types';
 import { IS_LITE_FORM } from './withForm'
 
 // HoC which add "_formClass" prop - link to withForm super class
-const getFormClass = (element: Element): FormElement => {
+const getFormClass = (element: ConnectableElement): FormElement => {
   const form = element.closest(`[${IS_LITE_FORM}]`)
   if (form) return form as FormElement;
 
@@ -17,7 +17,7 @@ const getFormClass = (element: Element): FormElement => {
 
 export const withFormClass = <T extends Constructor<ConnectableElement>>(Component: T) => {
   return class extends Component {
-    _formClass: FormElement;
+    _formClass!: FormElement;
     
     connectedCallback() {
       // Optimization - it don't need to looking for form if class already have it

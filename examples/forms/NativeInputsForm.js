@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit-element'
-import { withForm } from '../../src'
+
+import { withForm } from '../../dist/index.js'
 
 class NotWrappedInputsForm extends LitElement {
   createRenderRoot() {

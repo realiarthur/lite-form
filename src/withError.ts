@@ -1,7 +1,7 @@
 import { Constructor, CustomElement } from './types'
 
 import { EVENTS } from './withForm'
-import { get } from 'lodash-es'
+import get from 'lodash-es/get'
 import { withFormClass } from './withFormClass'
 
 // Super need to have "name" attribute
@@ -11,9 +11,10 @@ export const withError = <T extends Constructor<CustomElement<{name: string}>>>(
       touched?: boolean; 
       error?: string; 
 
-      _onFormErrorsChange = (e: CustomEvent): void => {
-        this.touched = get(e.detail.touched, this.name)
-        this.error = get(e.detail.errors, this.name)
+      _onFormErrorsChange = (e: Event): void => {
+        const detail = (e as CustomEvent).detail;
+        this.touched = get(detail.touched, this.name)
+        this.error = get(detail.errors, this.name)
       }
 
       connectedCallback(): void {

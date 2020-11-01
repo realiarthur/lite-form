@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit-element'
-import { withForm } from '../../src'
+
+import { withForm } from '../../dist/index.js'
 
 class LiteForm extends LitElement {
   static get properties() {

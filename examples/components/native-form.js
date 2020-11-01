@@ -1,4 +1,4 @@
-import { withForm } from '../../src'
+import { withForm } from '../../dist/index.js'
 
 class LiteForm extends HTMLFormElement {
   connectedCallback() {

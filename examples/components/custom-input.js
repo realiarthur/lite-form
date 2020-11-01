@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit-element'
+
 import { ifDefined } from 'lit-html/directives/if-defined'
-import { withField } from '../../src/withField'
+import { withField } from '../../dist/index.js'
 
 export default class ExwcInput extends LitElement {
   static get properties() {
