@@ -326,6 +326,7 @@ Instead of using config in the HOC, you can put it in the Component class. This 
 - touched: `object`
 - isValid: `boolean`
 - handleSubmit: `function`
+TODO: new signature for 2 following events + added SetTouched + validate params to setValue
 - handleChange: `(event, value) => {}`. event: `Event: {target: {name || id, value}} || CustomEvent: {detail: {name || id, value}}`
 - handleBlur: `(event) => {}`. event: `Event: {target: {name || id}} || CustomEvent: {detail: {name || id}}`
 - handleValidate: `function`

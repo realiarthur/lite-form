@@ -135,31 +135,37 @@ const withFormExtended = (config?:FormConfig) => <T extends Constructor<Connecta
       }
     }
 
-    // Set touched for name and handleValidate if needed
-    handleBlur = (event: Event | CustomEvent, name?: string): void => {
-        const eventTarget = getEventTarget(event)
-        if (eventTarget) {
-          const actualName = name || eventTarget.name || eventTarget.id;
-          this._touched = set(this._touched, actualName, true)
-          if (this._validateOnBlur) {
-            this.handleValidate()
-          }            
-        }
+    // Set touched and handleValidate if needed
+    setTouched = (name: string): void => {
+      this._touched = set(this._touched, name, true)
+      if (this._validateOnBlur) {
+        this.handleValidate()
+      }     
     }
 
-    setValue = (name: string, value:InputValue): void => {
-      this._values = set(cloneDeep(this.values), name, value)
-    }
-
-    handleChange = (event: Event | CustomEvent, name?: string): void  => {
+    // Handle Blur events
+    handleBlur = (event: Event | CustomEvent): void => {
       const eventTarget = getEventTarget(event)
       if (eventTarget) {
-        const actualName = name || eventTarget.name || eventTarget.id;
+        this.setTouched(eventTarget.name || eventTarget.id);
+      }
+    }
+
+    // Set the value for the given name.
+    // Triggers optional validation when validate is true.
+    setValue = (name: string, value:InputValue, validate = false): void => {
+      this._values = set(cloneDeep(this.values), name, value)
+      if (validate && this._validateOnChange) {
+        this.handleValidate()
+      }
+    }
+
+    // handle Change events
+    handleChange = (event: Event | CustomEvent): void  => {
+      const eventTarget = getEventTarget(event)
+      if (eventTarget) {
         const value = getValueFromEventTarget(eventTarget)
-        this.setValue(actualName, value)
-        if (this._validateOnChange) {
-          this.handleValidate()
-        }  
+        this.setValue(eventTarget.name || eventTarget.id, value, true)
       }
     }
 

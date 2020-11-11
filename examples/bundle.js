@@ -5312,29 +5312,34 @@
                     }, {});
                 }
             };
-            // Set touched for name and handleValidate if needed
-            this.handleBlur = (event, name) => {
-                const eventTarget = getEventTarget(event);
-                if (eventTarget) {
-                    const actualName = name || eventTarget.name || eventTarget.id;
-                    this._touched = set(this._touched, actualName, true);
-                    if (this._validateOnBlur) {
-                        this.handleValidate();
-                    }
+            // Set touched and handleValidate if needed
+            this.setTouched = (name) => {
+                this._touched = set(this._touched, name, true);
+                if (this._validateOnBlur) {
+                    this.handleValidate();
                 }
             };
-            this.setValue = (name, value) => {
-                this._values = set(cloneDeep(this.values), name, value);
-            };
-            this.handleChange = (event, name) => {
+            // Handle Blur events
+            this.handleBlur = (event) => {
                 const eventTarget = getEventTarget(event);
                 if (eventTarget) {
-                    const actualName = name || eventTarget.name || eventTarget.id;
+                    this.setTouched(eventTarget.name || eventTarget.id);
+                }
+            };
+            // Set the value for the given name.
+            // Triggers optional validation when validate is true.
+            this.setValue = (name, value, validate = false) => {
+                this._values = set(cloneDeep(this.values), name, value);
+                if (validate && this._validateOnChange) {
+                    this.handleValidate();
+                }
+            };
+            // handle Change events
+            this.handleChange = (event) => {
+                const eventTarget = getEventTarget(event);
+                if (eventTarget) {
                     const value = getValueFromEventTarget(eventTarget);
-                    this.setValue(actualName, value);
-                    if (this._validateOnChange) {
-                        this.handleValidate();
-                    }
+                    this.setValue(eventTarget.name || eventTarget.id, value, true);
                 }
             };
             this.handleValidate = () => {
@@ -5441,18 +5446,29 @@
         }
         return withFieldExtended()(configOrComponent);
     }
-    const withFieldExtended = (config) => (Component) => class LiteField extends withValue(Component) {
+    const withFieldExtended = (config = { captureBlur: true, listenChange: false }) => (Component) => class LiteField extends withValue(Component) {
         constructor() {
             super(...arguments);
-            this.handleChange = (event) => {
-                this._formClass.handleChange(event, this.name || this.id);
+            this.setValue = (value, validate = false) => {
+                this._formClass.setValue(this.name || this.id, value, validate);
             };
-            this.handleBlur = (event) => {
-                this._formClass.handleBlur(event, this.name || this.id);
+            this.handleChange = (event) => {
+                const eventTarget = getEventTarget(event);
+                if (eventTarget) {
+                    const value = getValueFromEventTarget(eventTarget);
+                    this.setValue(value, true);
+                }
+            };
+            this.setTouched = (name) => {
+                this._formClass.setTouched(name);
+            };
+            // Handle blur events.
+            this.handleBlur = () => {
+                this.setTouched(this.name || this.id);
             };
         }
         connectedCallback() {
-            const { captureBlur, listenChange } = config !== null && config !== void 0 ? config : {};
+            const { captureBlur, listenChange } = config;
             super.connectedCallback && super.connectedCallback();
             this.addEventListener('blur', this.handleBlur, captureBlur === true);
             if (listenChange) {
@@ -5460,7 +5476,7 @@
             }
         }
         disconnectedCallback() {
-            const { captureBlur, listenChange } = config !== null && config !== void 0 ? config : {};
+            const { captureBlur, listenChange } = config;
             super.disconnectedCallback && super.disconnectedCallback();
             this.removeEventListener('blur', this.handleBlur, captureBlur === true);
             if (listenChange) {

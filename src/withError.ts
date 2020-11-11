@@ -11,7 +11,7 @@ export const withError = <T extends Constructor<CustomElement<{name: string}>>>(
       touched?: boolean; 
       error?: string; 
 
-      _onFormErrorsChange = (e: Event): void => {
+      _onFormErrorsChange = (e: Event | CustomEvent): void => {
         const detail = (e as CustomEvent).detail;
         this.touched = get(detail.touched, this.name)
         this.error = get(detail.errors, this.name)

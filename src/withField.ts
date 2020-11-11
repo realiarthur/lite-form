@@ -35,18 +35,32 @@ export function withField(configOrComponent: FieldConfig | Constructor<Connectab
   return withFieldExtended()(configOrComponent)
 }
 
-const withFieldExtended = (config?: FieldConfig) => <T extends Constructor<CustomElement<{name?: string, id?:string}>>>(Component: T) =>
+const withFieldExtended = (config: FieldConfig = {captureBlur: true, listenChange: false}) => <T extends Constructor<CustomElement<{name?: string, id?:string}>>>(Component: T) =>
     class LiteField extends withValue(Component) {
-      handleChange = (event: Event | CustomEvent): void => {
-        this._formClass.handleChange(event, this.name || this.id);
+
+      setValue = (value: InputValue, validate = false): void => {
+        this._formClass.setValue(this.name || this.id, value, validate);
       }
 
-      handleBlur = (event: Event | CustomEvent): void => {
-        this._formClass.handleBlur(event, this.name || this.id)
+      handleChange = (event: Event | CustomEvent): void => {
+       const eventTarget = getEventTarget(event)
+        if (eventTarget) {
+          const value = getValueFromEventTarget(eventTarget)
+          this.setValue(value, true)
+        }
+      }
+
+      setTouched = (name: string): void => {
+        this._formClass.setTouched(name);
+      }
+
+      // Handle blur events.
+      handleBlur = (): void => {
+        this.setTouched(this.name || this.id)
       }
 
       connectedCallback(): void {
-        const {captureBlur, listenChange} = config ?? {};
+        const {captureBlur, listenChange} = config;
         
         super.connectedCallback && super.connectedCallback()
         this.addEventListener('blur', this.handleBlur, captureBlur === true)
@@ -56,7 +70,7 @@ const withFieldExtended = (config?: FieldConfig) => <T extends Constructor<Custo
       }
 
       disconnectedCallback(): void {
-        const {captureBlur, listenChange} = config ?? {};
+        const {captureBlur, listenChange} = config;
         
         super.disconnectedCallback && super.disconnectedCallback()
         this.removeEventListener('blur', this.handleBlur, captureBlur === true)

@@ -25,8 +25,10 @@ export type FormElementProps = {
 
 export type FormElement = CustomElement<FormElementProps & {
   handleSubmit: (e?:Event) => void;
-  handleChange: (event: Event | CustomEvent, name?: string) => void;
-  handleBlur: (event: Event | CustomEvent, name?: string) => void;
+  handleChange: (event: Event | CustomEvent) => void;
+  handleBlur: (event: Event | CustomEvent) => void;
   handleValidate: () => void;
   handleReset: () => void;
+  setTouched: (name: string) => void;
+  setValue: (name: string, value: InputValue, validate: boolean) => void;
 }>;
