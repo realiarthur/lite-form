@@ -5289,8 +5289,9 @@
         return withFormExtended()(configOrComponent);
     }
     const withFormExtended = (config) => (Component) => class LiteForm extends Component {
-        constructor() {
-            super(...arguments);
+        constructor(...args) {
+            var _a, _b;
+            super(...args);
             this.handleReset = (e) => {
                 e && e.preventDefault();
                 this._values = cloneDeep(this._initialValues);
@@ -5313,9 +5314,9 @@
                 }
             };
             // Set touched and handleValidate if needed
-            this.setTouched = (name) => {
+            this.setTouched = (name, validate = false) => {
                 this._touched = set(this._touched, name, true);
-                if (this._validateOnBlur) {
+                if (validate) {
                     this.handleValidate();
                 }
             };
@@ -5323,14 +5324,14 @@
             this.handleBlur = (event) => {
                 const eventTarget = getEventTarget(event);
                 if (eventTarget) {
-                    this.setTouched(eventTarget.name || eventTarget.id);
+                    this.setTouched(eventTarget.name || eventTarget.id, this._validateOnBlur);
                 }
             };
             // Set the value for the given name.
             // Triggers optional validation when validate is true.
             this.setValue = (name, value, validate = false) => {
                 this._values = set(cloneDeep(this.values), name, value);
-                if (validate && this._validateOnChange) {
+                if (validate) {
                     this.handleValidate();
                 }
             };
@@ -5339,7 +5340,7 @@
                 const eventTarget = getEventTarget(event);
                 if (eventTarget) {
                     const value = getValueFromEventTarget(eventTarget);
-                    this.setValue(eventTarget.name || eventTarget.id, value, true);
+                    this.setValue(eventTarget.name || eventTarget.id, value, this._validateOnChange);
                 }
             };
             this.handleValidate = () => {
@@ -5355,9 +5356,6 @@
                 this.isValid = isValid;
                 this._errors = errors;
             };
-        }
-        connectedCallback() {
-            var _a, _b;
             const { onSubmit, initialValues, validationSchema, validateOnChange, validateOnBlur } = config !== null && config !== void 0 ? config : {};
             // take params from HOC argument, or from class (if you build base class, like <lite-form>) or default
             this._onSubmit = (onSubmit || this.onSubmit || function () { }).bind(this);
@@ -5365,6 +5363,8 @@
             this._validationSchema = validationSchema || this.validationSchema || {};
             this._validateOnBlur = (_a = validateOnBlur !== null && validateOnBlur !== void 0 ? validateOnBlur : this.validateOnBlur) !== null && _a !== void 0 ? _a : true;
             this._validateOnChange = (_b = validateOnChange !== null && validateOnChange !== void 0 ? validateOnChange : this.validateOnChange) !== null && _b !== void 0 ? _b : true;
+        }
+        connectedCallback() {
             // isLiteForm atribute for HOCs can find their form element
             this.setAttribute(IS_LITE_FORM, 'true');
             this.handleReset();
@@ -5456,15 +5456,15 @@
                 const eventTarget = getEventTarget(event);
                 if (eventTarget) {
                     const value = getValueFromEventTarget(eventTarget);
-                    this.setValue(value, true);
+                    this.setValue(value, this._formClass._validateOnChange);
                 }
             };
-            this.setTouched = (name) => {
-                this._formClass.setTouched(name);
+            this.setTouched = (validate = false) => {
+                this._formClass.setTouched(this.name || this.id, validate);
             };
             // Handle blur events.
             this.handleBlur = () => {
-                this.setTouched(this.name || this.id);
+                this.setTouched(this._formClass._validateOnBlur);
             };
         }
         connectedCallback() {

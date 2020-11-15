@@ -40,26 +40,24 @@ const withFormExtended = (config?:FormConfig) => <T extends Constructor<Connecta
     touched!: TouchedMap;
     isValid!: boolean | undefined; 
 
-    _onSubmit!: (values: ValueMap, props: FormElementProps) => void;
-    _initialValues!: ValueMap;
-    _validationSchema!: ValidatorMap;
-    _validateOnBlur!: boolean;
-    _validateOnChange!: boolean;
+    readonly _onSubmit!: (values: ValueMap, props: FormElementProps) => void;
+    readonly _initialValues!: ValueMap;
+    readonly _validationSchema!: ValidatorMap;
+    readonly _validateOnBlur!: boolean;
+    readonly _validateOnChange!: boolean;
 
-    connectedCallback(): void {
+    constructor(...args: any[]) {
+      super(...args);
       const {onSubmit, initialValues, validationSchema, validateOnChange, validateOnBlur} = config ?? {};
       // take params from HOC argument, or from class (if you build base class, like <lite-form>) or default
       this._onSubmit = (onSubmit || this.onSubmit || function () {}).bind(this)
       this._initialValues = initialValues || this.initialValues || {}
       this._validationSchema = validationSchema || this.validationSchema || {}
-      this._validateOnBlur = 
-        validateOnBlur ??
-        this.validateOnBlur ??
-        true
-      this._validateOnChange = validateOnChange ??
-        this.validateOnChange ??
-        true
+      this._validateOnBlur = validateOnBlur ?? this.validateOnBlur ?? true
+      this._validateOnChange = validateOnChange ?? this.validateOnChange ?? true
+    }
 
+    connectedCallback(): void {
       // isLiteForm atribute for HOCs can find their form element
       this.setAttribute(IS_LITE_FORM, 'true')
 
@@ -136,9 +134,9 @@ const withFormExtended = (config?:FormConfig) => <T extends Constructor<Connecta
     }
 
     // Set touched and handleValidate if needed
-    setTouched = (name: string): void => {
+    setTouched = (name: string, validate = false): void => {
       this._touched = set(this._touched, name, true)
-      if (this._validateOnBlur) {
+      if (validate) {
         this.handleValidate()
       }     
     }
@@ -147,7 +145,7 @@ const withFormExtended = (config?:FormConfig) => <T extends Constructor<Connecta
     handleBlur = (event: Event | CustomEvent): void => {
       const eventTarget = getEventTarget(event)
       if (eventTarget) {
-        this.setTouched(eventTarget.name || eventTarget.id);
+        this.setTouched(eventTarget.name || eventTarget.id, this._validateOnBlur);
       }
     }
 
@@ -155,7 +153,7 @@ const withFormExtended = (config?:FormConfig) => <T extends Constructor<Connecta
     // Triggers optional validation when validate is true.
     setValue = (name: string, value:InputValue, validate = false): void => {
       this._values = set(cloneDeep(this.values), name, value)
-      if (validate && this._validateOnChange) {
+      if (validate) {
         this.handleValidate()
       }
     }
@@ -165,7 +163,7 @@ const withFormExtended = (config?:FormConfig) => <T extends Constructor<Connecta
       const eventTarget = getEventTarget(event)
       if (eventTarget) {
         const value = getValueFromEventTarget(eventTarget)
-        this.setValue(eventTarget.name || eventTarget.id, value, true)
+        this.setValue(eventTarget.name || eventTarget.id, value, this._validateOnChange)
       }
     }
 

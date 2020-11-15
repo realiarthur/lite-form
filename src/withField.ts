@@ -46,17 +46,17 @@ const withFieldExtended = (config: FieldConfig = {captureBlur: true, listenChang
        const eventTarget = getEventTarget(event)
         if (eventTarget) {
           const value = getValueFromEventTarget(eventTarget)
-          this.setValue(value, true)
+          this.setValue(value, this._formClass._validateOnChange)
         }
       }
 
-      setTouched = (name: string): void => {
-        this._formClass.setTouched(name);
+      setTouched = (validate = false): void => {
+        this._formClass.setTouched(this.name || this.id, validate);
       }
 
       // Handle blur events.
       handleBlur = (): void => {
-        this.setTouched(this.name || this.id)
+        this.setTouched(this._formClass._validateOnBlur)
       }
 
       connectedCallback(): void {

@@ -24,11 +24,13 @@ export type FormElementProps = {
 }
 
 export type FormElement = CustomElement<FormElementProps & {
+  readonly _validateOnChange: boolean;
+  readonly _validateOnBlur: boolean;
   handleSubmit: (e?:Event) => void;
   handleChange: (event: Event | CustomEvent) => void;
   handleBlur: (event: Event | CustomEvent) => void;
   handleValidate: () => void;
   handleReset: () => void;
-  setTouched: (name: string) => void;
+  setTouched: (name: string, validate: boolean) => void;
   setValue: (name: string, value: InputValue, validate: boolean) => void;
 }>;
