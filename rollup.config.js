@@ -1,33 +1,49 @@
-import babel from 'rollup-plugin-babel'
-import { terser } from 'rollup-plugin-terser'
-import external from '@yelo/rollup-node-external';
+import postcss from 'rollup-plugin-postcss';
+import resolve from '@rollup/plugin-node-resolve';
+import serve from 'rollup-plugin-serve';
+//import { terser } from "rollup-plugin-terser";
+import typescript from '@rollup/plugin-typescript';
 
-const config = {
-  input: 'src/index.js',
-  external: external(),
-  output: {
-    format: 'umd',
-    name: 'lite-form',
-    globals: {
-      'lodash.set': 'set',
-      'lodash.get': 'get',
-      'lodash.clonedeep': 'clonedeep'
-    },
+//const env = JSON.stringify(!process.env.ROLLUP_WATCH ? 'production' : 'development');
+
+export default [
+  {
+    input: 'src/index.ts',
+
+    output: [
+      {
+        dir: 'dist/',
+        format: 'esm',
+      },
+    ],
+
+    plugins: [
+      resolve(),
+      typescript({}),
+      //terser(),
+    ],
+
+    external: [/lodash/]
   },
-  plugins: [
-    babel({
-      runtimeHelpers: true,
-      plugins: ["@babel/plugin-proposal-class-properties"],
-    }),
-    terser({
-      compress: {
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-        warnings: false
-      }
-    })
-  ]
-}
+  {
+    input: 'examples/index.js',
 
-export default config
+    output: {
+      file: 'examples/bundle.js',
+      format: 'umd',
+    },
+
+    plugins: [
+      resolve(),
+      postcss(),
+      serve({
+        contentBase: ['examples'],
+        port: 3000,
+      })
+    ],
+  },
+  
+  
+  
+  
+];

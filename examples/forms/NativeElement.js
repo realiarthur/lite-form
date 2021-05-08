@@ -1,14 +1,5 @@
 import { html } from 'lit-element'
 
-// const formRender = () =>
-//   html` <custom-input name="login"></custom-input>
-//     <error-message name="login"></error-message>
-
-//     <custom-input name="password" type="password"></custom-input>
-//     <error-message name="password"></error-message>
-
-//     <button type="submit">Submit</button>`
-
 const MyForm = html`
   <h4>Builtin form element</h4>
 

@@ -1,12 +1,15 @@
 {
   "name": "lite-form",
   "description": "Form HOC for Web Components. It's also works for LitElement.",
-  "version": "1.0.2",
-  "scripts": {
-    "start": "webpack-dev-server --config examples/webpack.development.js ",
-    "build": "rollup -c -o dist/index.js"
-  },
+  "version": "2.0.0",
+  "scripts": {},
   "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/realiarthur/lite-form.git"
@@ -33,26 +36,19 @@
     "submit"
   ],
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-class-properties": "^7.2.3",
-    "@babel/preset-env": "^7.6.3",
-    "@yelo/rollup-node-external": "^1.0.1",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.5.2",
-    "lit-element": "^2.3.1",
-    "rollup": "^1.20.2",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-terser": "^5.1.1",
-    "style-loader": "^1.1.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.10.3"
+    "@rollup/plugin-node-resolve": "^10.0.0",
+    "@rollup/plugin-typescript": "^6.1.0",
+    "@types/lodash-es": "^4.17.3",
+    "lit-element": "^2.4.0",
+    "rollup": "^2.33.1",
+    "rollup-plugin-postcss": "^3.1.8",
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "size-limit": "^4.7.0",
+    "tslib": "^2.0.3",
+    "typescript": "^4.0.5"
   },
   "dependencies": {
-    "lodash.clonedeep": "^4.2.0",
-    "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2"
+    "lodash-es": "^4.17.15"
   }
 }

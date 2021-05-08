@@ -1,6 +1,4 @@
 /node_modules
-/src
 /examples
 
 .DS_Store
-rollup.config.js

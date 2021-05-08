@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit-element'
-import { withError } from '../../src/withError'
+
+import { withError } from '../../dist/index.js'
 
 export default class ExwcInput extends LitElement {
   createRenderRoot() {
