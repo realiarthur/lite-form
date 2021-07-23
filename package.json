@@ -1,7 +1,7 @@
 {
   "name": "lite-form",
   "description": "Form HOC for Web Components. It's also works for LitElement.",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "scripts": {
     "start": "webpack-dev-server --config examples/webpack.development.js ",
     "build": "rollup -c -o dist/index.js"
