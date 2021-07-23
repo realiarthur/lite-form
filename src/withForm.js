@@ -32,6 +32,9 @@ const withFormExtended = ({
       // take params from HOC argument, or from class (if you build base class, like <lite-form>) or default
       this._onSubmit = (onSubmit || this.onSubmit || function () {}).bind(this)
       this._initialValues = initialValues || this.initialValues || {}
+      if (typeof this._initialValues === 'function') {
+        this._initialValues = this._initialValues(this)
+      }
       this._validationSchema = validationSchema || this.validationSchema || {}
       this._validateOnBlur = setBooleanValue(
         validateOnBlur,
