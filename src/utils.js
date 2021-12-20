@@ -1,10 +1,17 @@
+export const shalowEqual = (a, b) => {
+  if (typeof a !== 'object' || typeof b !== 'object') return a === b
+
+  for (const key in a) {
+    if (a[key] !== b[key]) return false
+  }
+
+  return true
+}
+
 export const getEventTarget = e => e.detail || e.target
 
 export const getValueFromEventTarget = target => {
-  if (
-    target instanceof HTMLInputElement ||
-    target instanceof HTMLSelectElement
-  ) {
+  if (target instanceof HTMLInputElement || target instanceof HTMLSelectElement) {
     const { value, type, checked, options, multiple } = target
 
     const val = /number|range/.test(type)
@@ -23,11 +30,7 @@ export const getValueFromEventTarget = target => {
 }
 
 export const setBooleanValue = (value1, value2, defaultValue) => {
-  return typeof value1 === 'boolean'
-    ? value1
-    : typeof value2 === 'boolean'
-    ? value2
-    : defaultValue
+  return typeof value1 === 'boolean' ? value1 : typeof value2 === 'boolean' ? value2 : defaultValue
 }
 
 //closest polyfill

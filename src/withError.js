@@ -8,8 +8,13 @@ export const withError = Сomponent => {
   return withFormClass(
     class extends Сomponent {
       _onFormErrorsChange = e => {
-        this.touched = get(e.detail.touched, this.name)
-        this.error = get(e.detail.errors, this.name)
+        if (!e) return
+        
+        const { name, touched, error } = e.detail
+        if (name === this.name) {
+          this.touched = touched
+          this.error = error
+        }
       }
 
       connectedCallback() {
@@ -18,20 +23,14 @@ export const withError = Сomponent => {
         this.touched = get(this._formClass.touched, this.name)
         this.error = get(this._formClass.errors, this.name)
 
-        this._formClass.addEventListener(
-          EVENTS.errorsChange,
-          this._onFormErrorsChange
-        )
+        this._formClass.addEventListener(EVENTS.errorsChange, this._onFormErrorsChange)
       }
 
       disconnectedCallback() {
         super.disconnectedCallback && super.disconnectedCallback()
 
-        this._formClass.removeEventListener(
-          EVENTS.errorsChange,
-          this._onFormErrorsChange
-        )
+        this._formClass.removeEventListener(EVENTS.errorsChange, this._onFormErrorsChange)
       }
-    }
+    },
   )
 }
