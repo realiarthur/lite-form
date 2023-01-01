@@ -38,7 +38,7 @@
     "@babel/preset-env": "^7.6.3",
     "@yelo/rollup-node-external": "^1.0.1",
     "babel-loader": "^8.0.6",
-    "css-loader": "^3.5.2",
+    "css-loader": "^6.7.3",
     "lit-element": "^2.3.1",
     "rollup": "^1.20.2",
     "rollup-plugin-babel": "^4.3.3",
@@ -46,8 +46,8 @@
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^5.1.1",
     "style-loader": "^1.1.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
